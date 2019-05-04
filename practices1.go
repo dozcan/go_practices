@@ -39,3 +39,29 @@ func main(){
    kisi= fmt.Sprintf(kisi,"doga",21)
    fmt.Println(kisi)
 }
+
+
+************************************************
+package main
+
+import (
+	
+"fmt"
+"strings"
+)
+
+func toUp(s rune) rune{
+    if s == 'a' {
+       return 'b'
+    }
+    if(s == ' '){
+       return '*'
+    }
+    return 'c'
+}
+
+func main(){
+   i := "doga ozcan"
+   fmt.Println(strings.Map(toUp,i))
+}
+
