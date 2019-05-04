@@ -24,3 +24,18 @@ func main() {
       }
       fmt.Println(c(6,2))
 }
+
+********************************************************
+package main
+
+import (
+	
+"fmt"
+)
+
+var kisi = "benim adım:%s'dır yasım %v'dir"
+
+func main(){
+   kisi= fmt.Sprintf(kisi,"doga",21)
+   fmt.Println(kisi)
+}
