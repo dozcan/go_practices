@@ -12,6 +12,14 @@ func(s *stack) push(y interface{}) {
 }
 
 func(s *stack) pop() (result interface {},err error) {
+   defer func() {
+      if err == nil {
+         fmt.Println("hata yok")
+         return
+     }
+     fmt.Println("hata var")
+   }()
+			
    temp := *s
    if len(temp) == 0 {
      result = nil
