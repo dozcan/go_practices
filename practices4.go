@@ -46,26 +46,23 @@ func filter(x int) bool {
    return false
 }
 
-type intArr struct{
-    a []int
-}
+type intArr []int
 
 func(list *intArr) filterIt(f func(int) bool){
     var x intArr 
     temp := *list
-    for _,element:= range temp.a{
+    for _,element:= range temp{
          if f(element) {
-            x.a = append(x.a,element)
+            x = append(x,element)
          }
      }
-     temp = x
-     list = &temp
-    
+     *list = x
 }
 
 func main() {
-   x:= new(intArr)
-   x.a = []int {1,2,3,4,5,6}
+   x:= intArr{1,2,3,4,5,6}
    x.filterIt(filter)   
    fmt.Println(x)
 }
+
+
