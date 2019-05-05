@@ -33,3 +33,39 @@ func main() {
 
 
 ********************************update same slice*******************************
+package main
+
+import (
+	"fmt"
+)
+
+func filter(x int) bool {
+   if x%2==0{
+     return true
+   }
+   return false
+}
+
+type intArr struct{
+    a []int
+}
+
+func(list *intArr) filterIt(f func(int) bool){
+    var x intArr 
+    temp := *list
+    for _,element:= range temp.a{
+         if f(element) {
+            x.a = append(x.a,element)
+         }
+     }
+     temp = x
+     list = &temp
+    
+}
+
+func main() {
+   x:= new(intArr)
+   x.a = []int {1,2,3,4,5,6}
+   x.filterIt(filter)   
+   fmt.Println(x)
+}
