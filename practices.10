@@ -1,0 +1,36 @@
+sorting with interface
+
+package main
+
+import (
+	"fmt"
+)
+
+type Isort interface {
+   Len() int
+   Less(i,j int) bool
+   Swap(i,j int)	
+}
+
+type xInt []int
+
+func(x xInt) Len() int {return len(x)}
+func(x xInt) Less(i,j int) bool {return x[i]>x[j]}
+func(x xInt) Swap(i,j int) {x[i],x[j] = x[j],x[i]}
+
+
+func Sort(x Isort) { 
+	for i := 0 ; i < x.Len() - 1 ; i++ { 
+	      for j := i + 1 ; j < x.Len() ; j++ {
+		if x.Less(i, j) {
+			x.Swap(i, j)
+		}
+	      }
+	}
+}
+
+func main() {
+        ints := xInt {44, 67, 3, 17, 89, 10, 73, 9, 14, 8}
+	Sort(ints)
+        fmt.Printf("%v\n", ints)
+}
