@@ -1,5 +1,6 @@
 linked list
-  package main
+  
+package main
 
 import (
 	"fmt"
@@ -72,3 +73,4 @@ func main() {
         controlAdd("selda","ozcan")
         showNodes()     
 }
+
