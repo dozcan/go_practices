@@ -53,3 +53,26 @@ var sha256Hash = function (str,hashKey){
   return hashedStr;
 }
 
+
+
+
+var s = "ben doga ama ozcan doga ozcan"
+var p = "doga ozcan"
+var l = p.length
+let chunk=""
+let temp= ""
+for(let i=0;i<s.length;i=i+l){
+    chunk = s.substr(i,l)
+    if(temp != "" ) {
+      console.log("pre",temp)
+      temp = temp.concat(chunk.substr(0,l-temp.length))
+      console.log("aft",temp)
+    }
+    if(chunk != p){
+       temp = 	chunk.split(' ').slice(1).join(' ')
+
+    }
+    else{
+     console.log("bulduk")
+    }
+}
