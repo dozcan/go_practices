@@ -62,7 +62,7 @@ var s3= "well-known quotations that are associated with Shakespeare. Most of the
 var s4= "Bard's own work but he wasn't averse to stealing a good line occasionally and a few of "
 var s5= "these were 'popularised by' rather than 'coined by' Shakespeare"
 s = s.concat(s1,s2,s3,s4,s5)
-var pattern = "claim to"
+var pattern = "he contributed more"
 var l = pattern.length
 let chunk=""
 let temp= ""
@@ -77,6 +77,22 @@ parseMultiSpace = str => {
   })
 }
 
+isFilter = (source,destination)=> {
+   let exist = 0
+   let _destination = destination.split(' ')
+   let _source = source.split(' ')
+   let result = _destination.map(element => _source.indexOf(element))
+   if(result.includes(-1)) return false
+   else{
+    let len = _destination.length
+    for(let i=0;i<len;i++){
+        exist = result[len-1]-result[len-2]
+    }
+    if(exist === 1) return true
+    else return false
+   }
+}
+     
 for(let i=0;i<s.length;i=i+l){
    chunk = s.substr(i,l)
    //chunk = parseMultiSpace(chunk)
@@ -88,7 +104,7 @@ for(let i=0;i<s.length;i=i+l){
        for(;j<tempPattern.length;j++){
          let newIteratifTemp = tempPattern.slice(j).join(' ')
          if(newIteratifTemp.length < pattern.length)break
-         if(newIteratifTemp.includes(pattern)){
+         if(isFilter(newIteratifTemp,pattern)){
             console.log("we find it")  
             we_find_it =true
             break
@@ -102,6 +118,19 @@ for(let i=0;i<s.length;i=i+l){
       break
    }
 }
+   
+
+     
+     
+     
+  
+
+
+
+
+
+
+
    
 
      
