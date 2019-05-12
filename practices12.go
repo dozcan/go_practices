@@ -79,8 +79,6 @@ var sha256Hash = function (str,hashKey){
 
 
 
-
-
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
 var s2 ="phrases and sayings  to the language than any other "  
@@ -133,13 +131,10 @@ isFilterResult = (source,destination)=> {
    if(result.includes(-1)) return false
    else{
     let len = _destination.length
-    for(let i=0;i<len-1;i++){
-        for(let j=1;i<len;j++)
-          exist = result[j]-result[i] + exist
-        
+     for(let i=0,j=1;i<result.length-1,j<result.length;i++,j++){
+        exist =  result[j]-result[i] + exist
     }
-
-    if(exist === 1) return true
+    if(exist === result.length-1) return true
     else return false
    }
 }
@@ -174,5 +169,3 @@ for(let i=0;i<s.length;i=i+pattern.length){
 if(!we_find_it){
   console.log("we find it with %",100*Math.max(...moduloResultArr))
 }
-
-
