@@ -72,17 +72,19 @@ var startSearchEngine = (folderPath,file,searchPattern)  => {
   });
 }
 
+
+
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
 var s2 ="phrases and sayings  to the language than any other "  
 var s3 ="individual, and  sayings to  the English language in daily use. Here's a " 
-var s4 ="collection of well-known quotations that are associated with " 
+var s4 ="collection of wellknown quotations that are associated with " 
 var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't "
-var s6 ="the well-known quotations is that associated for insane "
+var s6 ="the wellknown quotation is that associated for insane "
 
 
 s = s+s1+s2+s3+s4+s5+s6
-var pattern = "well-known quotations is associated"
+var pattern = "there wellknown er is"
 let chunk=""
 let temp= ""
 let slicePattern=0
@@ -98,20 +100,38 @@ let moduloResultArr = []
  * *************************************************************/
 maximumIncrementalSequence = arg => {
   let incrementalCount = 0
-  let firstIndex = arg[0]
   let max =[]
-  for(let i=1;i<arg.length;i++){
-    if(arg[i] - firstIndex === 1){
+  let newArg = []
+  arg.forEach(element => {
+      if(element === -1)
+        newArg.push(-10)
+      else
+        newArg.push(element)
+  })
+  let firstIndex = newArg[0]
+  for(let i=1;i<newArg.length;i++){
+    if(newArg[i] - firstIndex === 1){
       incrementalCount++     
-      firstIndex = arg[i]
+      firstIndex = newArg[i]
     }
     else{
       max.push(incrementalCount)
       incementalCount=0
-      firstIndex = arg[i]
+      firstIndex = newArg[i]
     }
   }
   return Math.max(...max)
+}
+
+/***************************************************************
+ * function : isFilter
+ * find the weight of percentage of sentence occurs in file
+ * *************************************************************/
+isFilter = (source,destination)=> {
+       
+   let result = destination.split(' ').map(element => source.split(' ').indexOf(element))
+   let incementalCount = maximumIncrementalSequence(result)
+   return (incementalCount+1) / result.length
 }
 
 
@@ -126,17 +146,6 @@ parseMultiSpace = str => {
          return prev
       else return prev.concat(" ",next)
   })
-}
-
-
-/***************************************************************
- * function : isFilter
- * find the weight of percentage of sentence occurs in file
- * *************************************************************/
-isFilter = (source,destination)=> {
-   let result = destination.split(' ').map(element => source.split(' ').indexOf(element))
-   let incementalCount = maximumIncrementalSequence(result)
-   return (incementalCount+1) / result.length
 }
 
 
@@ -180,7 +189,7 @@ for(let i=0;i<s.length;i=i+pattern.length){
          let newIteratifTemp = tempPattern.slice(j).join(' ')
          if(newIteratifTemp.length < pattern.length)break
          if(isFilterResult(newIteratifTemp,pattern)){
-            console.log("find it with %100") 
+            console.log("we find it with %100") 
             we_find_it =true
             break
          }
@@ -193,7 +202,7 @@ for(let i=0;i<s.length;i=i+pattern.length){
      }
    }
    else {
-      console.log("we find it with %100",pattern) 
+      console.log("we find it with %100") 
       we_find_it =true
       break
    }
