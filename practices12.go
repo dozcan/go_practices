@@ -1,28 +1,29 @@
-**********************************************************************************************
-algoritma şu şekilde çalışmaktadır
-1)dosya aramada optimizasyon onemli olduğu için aranan cümle uzunluğu kadar memory alana chunk veri alınır
-2)eğer chunk veri aranan ile uyumlu ise sonuç başarılıdır sonuç bulunmuştur
-3)chunk veri stream olduğu için ve devamlı geldiği için bunu bir temp alanda biriktirmek gerekir
-4)algoritma ise, aranını bulamama durumunda chunk içindeki ilk kelimeyi eler ve sonrası iteratif şekilde
-  ikinci elemandan sonraki chunk verinin içindeki belli elemanı alarak aranan cümle uzunluğunda cümle oluşturur
-  arama bu şekilde devam ettirilir
-5) dosya bitirildiğinde aranan cümlenin hepsi var ise sonuç döndürülür ancak aranan bütünüyle yok ise
-   cümle dosyada hangi oranda doğru şekilde mevcut ise onun oranı döndürülür.
-6) diyelim ki dosyada şu şekilde bir cümle mevcut
-   => "collection of well-known  quotations         that are associated with "
-   aranan cümle ise aşağıdaki gibi olsun
-   =>"well-known   quotations   that associated"
-   başarı oranı %75 olacaktır
-7) eğer daha büyük bir oran var ise o sonuç olarak yansıyacaktır
-   => "collection of well-known  quotations         that are associated with "
-   => "collection of well-known  quotations that associated with "
-   aranan cümle ise aşağıdaki gibi olsun
-   =>"well-known   quotations   that associated"
-   başarı oranı %100 olacaktır
+/*********************************************************************************************************************
+main algorithm depends on optimization
+1) i didnt want to take all data to memory for searching sentence
+2) i take chunk to chunk to memory as a lenght of data equals to sentence length(search pattern)
+3) algoritm depends on creating new chunks from previous and next chunks
+  for example lets say
+  text    : i want to go to school but it think i am ill
+  pattern : i am ill
+  
+  datas will be like these
+  next sentence = want to go
+  next sentence = to go to
+  next sentence = go to school
+  
+  then we will find "i am ill"
+  
+4) for weight of pattern i am take an algorithm functions 
 
+  for example lets say
+  text    = collection of well-known quotations that are associated with the well-known quotations is that associated
+  pattern = well-known quotations is associated
+  result = %50 in first part, %75 in second part and then result is %75
+  
+*****************************************************************************************************************************/
 
 const fs = require('fs');
-const crypto = require('crypto');
 const stream = require('stream');
 
 const folderPath = process.argv[2]
@@ -65,19 +66,6 @@ var startSearchEngine = (folderPath,file,searchPattern)  => {
     }
   });
 }
-
-var getSearchPatternHash = searchPattern => {
-  return sha256Hash(searchPattern,"pattern with length" + searchPattern.split(' ').length)
-}
-
-
-var sha256Hash = function (str,hashKey){  
-  var hashedStr = crypto.createHmac('sha256',str).update(hashKey).digest('hex');
-  return hashedStr;
-}
-
-
-
 
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
@@ -122,6 +110,10 @@ maximumIncrementalSequence = arg => {
 }
 
 
+/***************************************************************
+ * function : parseMultiSpace
+ * multispace can prevent to find the right match 
+ * *************************************************************/
 parseMultiSpace = str => {
   let s = str.trim().split(' ')
   return s.reduce((prev,next) => {
@@ -141,7 +133,6 @@ isFilter = (source,destination)=> {
    let incementalCount = maximumIncrementalSequence(result)
    return (incementalCount+1) / result.length
 }
-
 
 
 /***************************************************************
@@ -165,6 +156,14 @@ isFilterResult = (source,destination)=> {
    }
 }
 
+
+/***************************************************************
+ * function : isFilterResult
+ * source: text pattern
+ * destination:sentence which will be find
+ * if destination is all occurs in text it will return true
+ * *************************************************************/
+pattern = parseMultiSpace(pattern)
 for(let i=0;i<s.length;i=i+pattern.length){
    chunk = s.substr(i,pattern.length)
    if(chunk !== pattern){
