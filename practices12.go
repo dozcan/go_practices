@@ -1,3 +1,26 @@
+**********************************************************************************************
+algoritma şu şekilde çalışmaktadır
+1)dosya aramada optimizasyon onemli olduğu için aranan cümle uzunluğu kadar memory alana chunk veri alınır
+2)eğer chunk veri aranan ile uyumlu ise sonuç başarılıdır sonuç bulunmuştur
+3)chunk veri stream olduğu için ve devamlı geldiği için bunu bir temp alanda biriktirmek gerekir
+4)algoritma ise, aranını bulamama durumunda chunk içindeki ilk kelimeyi eler ve sonrası iteratif şekilde
+  ikinci elemandan sonraki chunk verinin içindeki belli elemanı alarak aranan cümle uzunluğunda cümle oluşturur
+  arama bu şekilde devam ettirilir
+5) dosya bitirildiğinde aranan cümlenin hepsi var ise sonuç döndürülür ancak aranan bütünüyle yok ise
+   cümle dosyada hangi oranda doğru şekilde mevcut ise onun oranı döndürülür.
+6) diyelim ki dosyada şu şekilde bir cümle mevcut
+   => "collection of well-known  quotations         that are associated with "
+   aranan cümle ise aşağıdaki gibi olsun
+   =>"well-known   quotations   that associated"
+   başarı oranı %75 olacaktır
+7) eğer daha büyük bir oran var ise o sonuç olarak yansıyacaktır
+   => "collection of well-known  quotations         that are associated with "
+   => "collection of well-known  quotations that associated with "
+   aranan cümle ise aşağıdaki gibi olsun
+   =>"well-known   quotations   that associated"
+   başarı oranı %100 olacaktır
+
+
 const fs = require('fs');
 const crypto = require('crypto');
 const stream = require('stream');
@@ -54,15 +77,21 @@ var sha256Hash = function (str,hashKey){
 }
 
 
+
+
+
+
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
 var s2 ="phrases and sayings  to the language than any other "  
 var s3 ="individual, and  sayings to  the English language in daily use. Here's a " 
 var s4 ="collection of well-known quotations that are associated with " 
-var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't"
+var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't "
+var s6 ="the well-known quotations is that associated for insane "
 
-s = s+s1+s2+s3+s4+s5
-var pattern = " sayings to   the English "
+
+s = s+s1+s2+s3+s4+s5+s6
+var pattern = "well-known quotations that associated"
 let chunk=""
 let temp= ""
 let we_find_it = false
@@ -104,18 +133,19 @@ isFilterResult = (source,destination)=> {
    if(result.includes(-1)) return false
    else{
     let len = _destination.length
-    for(let i=0;i<len;i++){
-        exist = result[len-1]-result[len-2]
+    for(let i=0;i<len-1;i++){
+        for(let j=1;i<len;j++)
+          exist = result[j]-result[i] + exist
+        
     }
+
     if(exist === 1) return true
     else return false
    }
 }
 
-pattern = parseMultiSpace(chunk)
 for(let i=0;i<s.length;i=i+pattern.length){
    chunk = s.substr(i,pattern.length)
-   chunk = parseMultiSpace(chunk)
    if(chunk !== pattern){
      temp = temp.concat(chunk)
      if(temp.length != pattern.length){
@@ -125,6 +155,8 @@ for(let i=0;i<s.length;i=i+pattern.length){
          if(newIteratifTemp.length < pattern.length)break
          moduloResultArr.push(isFilter(newIteratifTemp,pattern))
          if(isFilterResult(newIteratifTemp,pattern)){
+            console.log(newIteratifTemp,"...") 
+            console.log(pattern) 
             console.log("we find it with %100") 
             we_find_it =true
             break
@@ -134,12 +166,13 @@ for(let i=0;i<s.length;i=i+pattern.length){
      }
    }
    else {
-      console.log("we find it with %100") 
+      console.log("we find it with %100",pattern) 
       we_find_it =true
       break
    }
 }
 if(!we_find_it){
-  console.log("we find it with %",Math.floor(100*Math.max(...moduloResultArr)))
+  console.log("we find it with %",100*Math.max(...moduloResultArr))
 }
+
 
