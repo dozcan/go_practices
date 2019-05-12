@@ -54,30 +54,44 @@ var sha256Hash = function (str,hashKey){
 }
 
 
+var s = "Barry Manilow may claim to write the songs, but it was "    
+var s1 ="William Shakespeare who coined the phrases - he contributed more "
+var s2 ="phrases and sayings to the English language than any other "  
+var s3 ="individual, and most of them are still in daily use. Here's a " 
+var s4 ="collection of well-known quotations that are associated with " 
+var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't"
 
-var s = "Barry Manilow may claim to write the songs, but it was William Shakespeare who coined " 
-var s1 ="the phrases - he contributed more phrases and sayings to the English language than any "
-var s2 ="other individual, and most of them are still in daily use. Here's a collection of "
-var s3= "well-known quotations that are associated with Shakespeare. Most of these were the "
-var s4= "Bard's own work but he wasn't averse to stealing a good line occasionally and a few of "
-var s5= "these were 'popularised by' rather than 'coined by' Shakespeare"
-s = s.concat(s1,s2,s3,s4,s5)
-var pattern = "he contributed more"
+s = s+s1+s2+s3+s4+s5
+var pattern = "Shakespeare who phrases"
 var l = pattern.length
 let chunk=""
 let temp= ""
 let j = 1
 let we_find_it = false
-parseMultiSpace = str => {
-  let s = str.trim().split(' ')
-  return s.reduce((prev,next) => {
-      if(next === "")
-         return prev
-      else return prev.concat(" ",next)
-  })
+let moduloResultArr = []  
+
+findIncremental = arg => {
+  let incementalCount = 0
+  let firstIndex = arg[0]
+  for(let i=1;i<arg.length;i++){
+       if(arg[i] - firstIndex === 1)
+         incementalCount++
+       firstIndex = arg[i]
+  }
+  return incementalCount
 }
 
 isFilter = (source,destination)=> {
+   let exist = 0
+   let _destination = destination.split(' ')
+   let _source = source.split(' ')
+   let result = _destination.map(element => _source.indexOf(element))
+   let len = _destination.length
+   incementalCount = findIncremental(result)
+   return (incementalCount+1) / result.length
+}
+
+isFilterResult = (source,destination)=> {
    let exist = 0
    let _destination = destination.split(' ')
    let _source = source.split(' ')
@@ -95,8 +109,6 @@ isFilter = (source,destination)=> {
      
 for(let i=0;i<s.length;i=i+l){
    chunk = s.substr(i,l)
-   //chunk = parseMultiSpace(chunk)
-   //pattern = parseMultiSpace(pattern)
    if(chunk !== pattern){
      temp = temp.concat(chunk)
      if(temp.length != pattern.length){
@@ -104,8 +116,9 @@ for(let i=0;i<s.length;i=i+l){
        for(;j<tempPattern.length;j++){
          let newIteratifTemp = tempPattern.slice(j).join(' ')
          if(newIteratifTemp.length < pattern.length)break
-         if(isFilter(newIteratifTemp,pattern)){
-            console.log("we find it")  
+         moduloResultArr.push(isFilter(newIteratifTemp,pattern))
+         if(isFilterResult(newIteratifTemp,pattern)){
+            console.log("we find it with %100") 
             we_find_it =true
             break
          } 
@@ -114,23 +127,13 @@ for(let i=0;i<s.length;i=i+l){
      }
    }
    else {
-      console.log("we find it") 
+      console.log("we find it with %100") 
       break
    }
 }
-   
-
-     
-     
-     
-  
-
-
-
-
-
-
-
+if(!we_find_it){
+  console.log("we find it with %",Math.floor(100*Math.max(...moduloResultArr)))
+}
    
 
      
