@@ -79,7 +79,6 @@ var sha256Hash = function (str,hashKey){
 
 
 
-
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
 var s2 ="phrases and sayings  to the language than any other "  
@@ -90,31 +89,38 @@ var s6 ="the well-known quotations is that associated for insane "
 
 
 s = s+s1+s2+s3+s4+s5+s6
-var pattern = "well-known quotations are associated"
+var pattern = "well-known quotations is associated"
 let chunk=""
 let temp= ""
+let slicePattern=0
 let we_find_it = false
 let moduloResultArr = []  
 
-findIncremental = arg => {
+
+/***************************************************************
+ * function : maximumIncrementalSequence
+ * in a given array, it finds the maximum sequential array
+ * for example: [1,2,6,7,8] => 3
+ * for example:[1,2,3,6,7] => 3
+ * *************************************************************/
+maximumIncrementalSequence = arg => {
   let incrementalCount = 0
   let firstIndex = arg[0]
   let max =[]
-  
-    for(let i=1;i<arg.length;i++){
-       if(arg[i] - firstIndex === 1){
-         incrementalCount++     
-         firstIndex = arg[i]
-       }
-       else{
-         max.push(incrementalCount)
-         incementalCount=0
-         firstIndex = arg[i]
-       }
+  for(let i=1;i<arg.length;i++){
+    if(arg[i] - firstIndex === 1){
+      incrementalCount++     
+      firstIndex = arg[i]
+    }
+    else{
+      max.push(incrementalCount)
+      incementalCount=0
+      firstIndex = arg[i]
+    }
   }
-  
   return Math.max(...max)
 }
+
 
 parseMultiSpace = str => {
   let s = str.trim().split(' ')
@@ -125,14 +131,25 @@ parseMultiSpace = str => {
   })
 }
 
+
+/***************************************************************
+ * function : isFilter
+ * find the weight of percentage of sentence occurs in file
+ * *************************************************************/
 isFilter = (source,destination)=> {
-   let _destination = destination.split(' ')
-   let _source = source.split(' ')
-   let result = _destination.map(element => _source.indexOf(element))
-   let incementalCount = findIncremental(result)
+   let result = destination.split(' ').map(element => source.split(' ').indexOf(element))
+   let incementalCount = maximumIncrementalSequence(result)
    return (incementalCount+1) / result.length
 }
 
+
+
+/***************************************************************
+ * function : isFilterResult
+ * source: text pattern
+ * destination:sentence which will be find
+ * if destination is all occurs in text it will return true
+ * *************************************************************/
 isFilterResult = (source,destination)=> {
    let exist = 0
    let _destination = destination.split(' ')
@@ -140,7 +157,6 @@ isFilterResult = (source,destination)=> {
    let result = _destination.map(element => _source.indexOf(element))
    if(result.includes(-1)) return false
    else{
-    let len = _destination.length
      for(let i=0,j=1;i<result.length-1,j<result.length;i++,j++){
         exist = Math.abs(result[j]-result[i]) + exist
     }
@@ -148,13 +164,13 @@ isFilterResult = (source,destination)=> {
     else return false
    }
 }
-let a=0
+
 for(let i=0;i<s.length;i=i+pattern.length){
    chunk = s.substr(i,pattern.length)
    if(chunk !== pattern){
      temp = temp.concat(chunk)
      if(temp.length != pattern.length){
-       let tempPattern = temp.split(' ').slice(a)
+       let tempPattern = temp.split(' ').slice(slicePattern)
        moduloResultArr= []
        for(j=1;j<tempPattern.length;j++){
          let newIteratifTemp = tempPattern.slice(j).join(' ')
@@ -168,7 +184,7 @@ for(let i=0;i<s.length;i=i+pattern.length){
            moduloResultArr.push(isFilter(newIteratifTemp,pattern))
          }
        }
-       a++
+       slicePattern++
        if(we_find_it) break
      }
    }
