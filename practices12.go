@@ -56,17 +56,15 @@ var sha256Hash = function (str,hashKey){
 
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
-var s2 ="phrases and sayings to the English language than any other "  
-var s3 ="individual, and most of them are still in daily use. Here's a " 
+var s2 ="phrases and sayings  to the language than any other "  
+var s3 ="individual, and  sayings to  the English language in daily use. Here's a " 
 var s4 ="collection of well-known quotations that are associated with " 
 var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't"
 
 s = s+s1+s2+s3+s4+s5
-var pattern = "Shakespeare who phrases"
-var l = pattern.length
+var pattern = " sayings to   the English "
 let chunk=""
 let temp= ""
-let j = 1
 let we_find_it = false
 let moduloResultArr = []  
 
@@ -81,13 +79,20 @@ findIncremental = arg => {
   return incementalCount
 }
 
+parseMultiSpace = str => {
+  let s = str.trim().split(' ')
+  return s.reduce((prev,next) => {
+      if(next === "")
+         return prev
+      else return prev.concat(" ",next)
+  })
+}
+
 isFilter = (source,destination)=> {
-   let exist = 0
    let _destination = destination.split(' ')
    let _source = source.split(' ')
    let result = _destination.map(element => _source.indexOf(element))
-   let len = _destination.length
-   incementalCount = findIncremental(result)
+   let incementalCount = findIncremental(result)
    return (incementalCount+1) / result.length
 }
 
@@ -106,14 +111,16 @@ isFilterResult = (source,destination)=> {
     else return false
    }
 }
-     
-for(let i=0;i<s.length;i=i+l){
-   chunk = s.substr(i,l)
+
+pattern = parseMultiSpace(chunk)
+for(let i=0;i<s.length;i=i+pattern.length){
+   chunk = s.substr(i,pattern.length)
+   chunk = parseMultiSpace(chunk)
    if(chunk !== pattern){
      temp = temp.concat(chunk)
      if(temp.length != pattern.length){
        let tempPattern = temp.split(' ')
-       for(;j<tempPattern.length;j++){
+       for(j=1;j<tempPattern.length;j++){
          let newIteratifTemp = tempPattern.slice(j).join(' ')
          if(newIteratifTemp.length < pattern.length)break
          moduloResultArr.push(isFilter(newIteratifTemp,pattern))
@@ -128,24 +135,11 @@ for(let i=0;i<s.length;i=i+l){
    }
    else {
       console.log("we find it with %100") 
+      we_find_it =true
       break
    }
 }
 if(!we_find_it){
   console.log("we find it with %",Math.floor(100*Math.max(...moduloResultArr)))
 }
-   
-
-     
-     
-     
-  
-
-
-
-
-
-
-
-
 
