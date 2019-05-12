@@ -1,5 +1,5 @@
 /*********************************************************************************************************************
-main algorithm depends on optimization
+main algorithm depends on optimization (i assume only 1 space between words in text files, this is critical for algorithm)
 1) i didnt want to take all data to memory for searching sentence
 2) i take chunk to chunk to memory as a lenght of data equals to sentence length(search pattern)
 3) algoritm depends on creating new chunks from previous and next chunks
@@ -16,21 +16,30 @@ main algorithm depends on optimization
   
 4) for weight of pattern i am take an algorithm functions 
 
-  for example lets say
+5)for example lets say
   text    = collection of well-known quotations that are associated with the well-known quotations is that associated
   pattern = well-known quotations is associated
   result = %50 in first part, %75 in second part and then result is %75
   
-  for example lets say
+6)for example lets say
   text    = "the well-known quotations is that associated for insane collection of well-known quotations that are"
   pattern = "there well-known quotations is"
   result  = "well-known quotations is" => %75 not %50
   
-  for example lets say
+7)for example lets say
   text    = "the wellknown quotations is that associated for insane collection of well-known quotations that are"
   pattern = "there wellknown quotations is an"
   result  = "well-known quotations is" => %60
  
+8)for example lets say (if we got multiparse in sentence which will be searched)
+  text    = "individual, and sayings to the English language in daily use. Here's a"
+  pattern = "ande sayings    to    the    English language"
+  result  = "well-known quotations is" => %83
+
+9)for example lets say (if we got multiparse in sentence which will be searched)
+  text    = "individual, and sayings to the English language in daily use. Here's a"
+  pattern = "sayings    to    the    English language"
+  result  = "well-known quotations is" => %83
 *****************************************************************************************************************************/
 
 const fs = require('fs');
@@ -78,18 +87,17 @@ var startSearchEngine = (folderPath,file,searchPattern)  => {
 }
 
 
-
 var s = "Barry Manilow may claim to write the songs, but it was "    
 var s1 ="William Shakespeare who coined the phrases - he contributed more "
 var s2 ="phrases and sayings  to the language than any other "  
-var s3 ="individual, and  sayings to  the English language in daily use. Here's a " 
+var s3 ="individual, and sayings to the English language in daily use. Here's a " 
 var s4 ="collection of wellknown quotations that are associated with " 
 var s5 ="Shakespeare. Most of these were the Bard's own work but he wasn't "
 var s6 ="the wellknown quotation is that associated for insane "
 
 
 s = s+s1+s2+s3+s4+s5+s6
-var pattern = "there wellknown er is"
+var pattern = "ande sayings to the English language"
 let chunk=""
 let temp= ""
 let slicePattern=0
@@ -104,28 +112,34 @@ let moduloResultArr = []
  * for example:[1,2,3,6,7] => 3
  * *************************************************************/
 maximumIncrementalSequence = arg => {
-  let incrementalCount = 0
   let max =[]
   let newArg = []
+  let count= 0
+  let elseBool = false
+
   arg.forEach(element => {
       if(element === -1)
         newArg.push(-10)
       else
         newArg.push(element)
   })
-  let firstIndex = newArg[0]
-  for(let i=1;i<newArg.length;i++){
-    if(newArg[i] - firstIndex === 1){
-      incrementalCount++     
-      firstIndex = newArg[i]
+  let first = newArg.slice(0,newArg.length-1)
+  let second = newArg.slice(1,newArg.length)
+  for(let i=0;i<first.length;i++){
+         exist = second[i]-first[i]
+         if(elseBool){
+          max.push(count)
+          count=0
+          elseBool = false
+        }
+        if(exist === 1) {
+          count++
+          if(i == first.length-1) max.push(count)
+        }
+        else elseBool = true
     }
-    else{
-      max.push(incrementalCount)
-      incementalCount=0
-      firstIndex = newArg[i]
-    }
-  }
-  return Math.max(...max)
+   if(count!=0)max.push(count)
+   return Math.max(...max)
 }
 
 /***************************************************************
