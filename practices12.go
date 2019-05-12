@@ -21,6 +21,11 @@ main algorithm depends on optimization
   pattern = well-known quotations is associated
   result = %50 in first part, %75 in second part and then result is %75
   
+  for example lets say
+  text    = "the well-known quotations is that associated for insane collection of well-known quotations that are"
+  pattern = "there well-known quotations is"
+  result  = "well-known quotations is" => %75 not %50
+ 
 *****************************************************************************************************************************/
 
 const fs = require('fs');
