@@ -25,6 +25,11 @@ main algorithm depends on optimization
   text    = "the well-known quotations is that associated for insane collection of well-known quotations that are"
   pattern = "there well-known quotations is"
   result  = "well-known quotations is" => %75 not %50
+  
+  for example lets say
+  text    = "the wellknown quotations is that associated for insane collection of well-known quotations that are"
+  pattern = "there wellknown quotations is an"
+  result  = "well-known quotations is" => %60
  
 *****************************************************************************************************************************/
 
