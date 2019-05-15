@@ -98,6 +98,7 @@ var s6 ="the wellknown quotation is that associated for insane "
 
 s = s+s1+s2+s3+s4+s5+s6
 var pattern = "ande sayings to the English language"
+
 let chunk=""
 let temp= ""
 let slicePattern=0
@@ -116,6 +117,7 @@ maximumIncrementalSequence = arg => {
   let newArg = []
   let count= 0
   let elseBool = false
+  
 
   arg.forEach(element => {
       if(element === -1)
@@ -149,6 +151,9 @@ maximumIncrementalSequence = arg => {
 isFilter = (source,destination)=> {
        
    let result = destination.split(' ').map(element => source.split(' ').indexOf(element))
+   if(result.filter(element => element === -1).length === result.length)
+    return 0
+    
    let incementalCount = maximumIncrementalSequence(result)
    return (incementalCount+1) / result.length
 }
